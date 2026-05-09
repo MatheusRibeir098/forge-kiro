@@ -1,0 +1,20 @@
+{
+  "name": "monitor-fix",
+  "description": "Monitor — orquestra o loop dev→tester até o problema ser resolvido",
+  "prompt": "file://prompts/monitor-fix.md",
+  "tools": ["fs_read", "execute_bash", "grep", "code"],
+  "mcpServers": {},
+  "allowedTools": [],
+  "resources": [
+    "file://.kiro/skills/_shared/code-review.md",
+    "file://.kiro/skills/_shared/agent-orchestration.md",
+    "file://.kiro/skills/_shared/clean-code.md",
+    "file://.kiro/skills/_shared/seguranca.md",
+    "file://.kiro/skills/_shared/safe-operations.md",
+    "file://.kiro/skills/_shared/no-deploy-no-push.md"
+  ],
+  "hooks": {},
+  "toolsSettings": {},
+  "includeMcpJson": false,
+  "model": "claude-sonnet-4.6"
+}
