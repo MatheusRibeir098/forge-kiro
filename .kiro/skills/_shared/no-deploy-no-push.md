@@ -22,6 +22,43 @@ Exemplos de comandos explícitos que autorizam a ação:
 - "Faça o deploy" → executa `cdk deploy`
 - "Faça commit, push e deploy" → executa os três em sequência
 
+## ⛔ NUNCA commitar arquivos desnecessários
+
+Quando o usuário pedir para **"subir para o GitHub"** ou **"criar repositório"**, commitar APENAS o que é necessário para o projeto funcionar.
+
+### Sempre ignorar (adicionar ao .gitignore antes do primeiro commit):
+- `.kiro/` — configurações internas do Kiro
+- `e2e/` e `playwright.config.ts` — testes locais de desenvolvimento
+- `.screenshots/` — capturas de tela de desenvolvimento
+- `prompt.md` — spec/prompt interno do forge
+- `orchestration/` — logs e sinais do forge-loop
+- `*.log`, `run.sh`, `setup.sh`, `clean-logs.sh` — scripts de orquestração local
+
+### Regra geral
+> Repositório público = apenas código-fonte, assets do produto, README e configurações de build. Nada de infraestrutura interna de desenvolvimento.
+
+---
+
+## ✅ COMMITS SEMPRE EM PORTUGUÊS
+
+Todas as mensagens de commit devem ser escritas em **português brasileiro**.
+
+```bash
+# ✅ Correto
+git commit -m "feat: adiciona página de histórico"
+git commit -m "fix: corrige validação do formulário"
+git commit -m "docs: atualiza README com instruções de uso"
+git commit -m "chore: remove arquivos desnecessários do repositório"
+
+# ❌ Errado
+git commit -m "feat: add history page"
+git commit -m "fix: form validation"
+```
+
+Prefixos convencionais (em inglês) são permitidos — `feat:`, `fix:`, `docs:`, `chore:`, `refactor:`, `style:`, `test:` — mas a **descrição** deve ser sempre em português.
+
+---
+
 ## ✅ O QUE DEVE FAZER SEM PRECISAR DE AUTORIZAÇÃO
 
 ### Git — Operações locais sempre permitidas
