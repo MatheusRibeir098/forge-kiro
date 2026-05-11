@@ -16,18 +16,30 @@
 
 ## O que é
 
-O Forge é um sistema de orquestração de agentes AI que automatiza a criação e manutenção de projetos de software. Ele tem dois modos:
+O Forge é um sistema de orquestração de agentes AI que automatiza a criação e manutenção de projetos de software.
 
-- **forge-loop** — cria projetos do zero a partir de uma ideia
-- **fix-loop** — implementa features ou corrige bugs em projetos existentes
+**Você fala apenas com o Kiro.** O Kiro entende o que você quer, monta a spec, instala dependências, passa as instruções para os agentes e monitora o progresso — você nunca precisa abrir o tmux ou falar diretamente com os agentes.
 
-Cada modo sobe 3 agentes especializados em uma sessão tmux:
+```
+Você
+  ↓ linguagem natural
+Kiro (orquestrador)
+  ↓ instrução estruturada
+Monitor
+  ↓ coordena
+Dev ←→ Tester
+```
 
-| Agente | Papel |
+### Divisão de responsabilidades
+
+| Quem | Faz |
 |---|---|
-| 👁 **monitor** | Lê a spec, coordena o trabalho, fala com o usuário |
-| 👷 **dev** | Escreve o código |
-| 🧪 **tester** | Roda testes e valida o resultado |
+| **Kiro** | Entende requisitos, monta prompt, instala deps, pesquisa, monitora agentes |
+| **Monitor** | Coordena dev e tester, mantém o foco no objetivo |
+| **Dev** | Escreve todo o código |
+| **Tester** | Roda testes E2E, tira prints, analisa visualmente cada tela |
+
+> O Kiro **nunca** escreve código de produto. Desenvolvimento é sempre responsabilidade dos agentes.
 
 ---
 
@@ -42,16 +54,14 @@ Cada modo sobe 3 agentes especializados em uma sessão tmux:
 ## Instalação
 
 ```bash
-git clone https://github.com/MatheusRibeir098/forge.git ~/forge
+git clone https://github.com/MatheusRibeir098/forge-framework.git ~/forge
 ```
-
-Pronto. Não há dependências adicionais.
 
 ---
 
 ## Como usar
 
-### Ponto de entrada — Forge Master
+### Ponto de entrada
 
 ```bash
 cd ~/forge
@@ -63,8 +73,6 @@ O Forge Master pergunta o que você quer fazer:
 ```
 🔥 Forge — Fábrica de Projetos
 
-O que vamos fazer hoje?
-
 1. 🆕 Criar um projeto do zero
 2. 🔧 Fix/implementação em projeto existente
 ```
@@ -73,36 +81,29 @@ O que vamos fazer hoje?
 
 ### Fluxo 1 — Criar projeto do zero
 
-1. Escolha a opção `1` e descreva sua ideia
-2. O Forge Master faz perguntas para refinar os requisitos (stack, funcionalidades, design)
-3. Gera um `prompt.md` — a spec completa do projeto
-4. Você aprova a spec
-5. O Forge cria a pasta `~/forge/projects/<nome>/`, instala as dependências e sobe o **forge-loop**
+1. Descreva sua ideia em linguagem natural
+2. O Kiro faz perguntas para refinar requisitos (stack, funcionalidades, design)
+3. Gera e apresenta o `prompt.md` para aprovação
+4. Após aprovação: cria a pasta, instala dependências e sobe o **forge-loop**
+5. O Kiro monitora o progresso e te avisa quando terminar
 
-```bash
-# Para acessar a sessão criada:
-tmux attach -t forge-<nome-do-projeto>
 ```
-
-O monitor já leu o `prompt.md` e está construindo o projeto. Você pode acompanhar ou falar com ele.
+~/forge/projects/<nome>/
+├── prompt.md    ← spec gerada
+└── ...          ← código construído pelos agentes
+```
 
 ---
 
 ### Fluxo 2 — Fix/implementação em projeto existente
 
-1. Escolha a opção `2` e informe o caminho do projeto
-2. O Forge sobe o **fix-loop** apontando para o projeto
-
-```bash
-# Para acessar:
-tmux attach -t fix-<nome-do-projeto>
-```
-
-Fale com o monitor sobre o bug ou feature que precisa.
+1. Informe o que precisa ser feito e o projeto
+2. O Kiro sobe o **fix-loop** e passa a instrução ao monitor
+3. Monitora e reporta quando concluído
 
 ---
 
-### Subir manualmente (sem o Forge Master)
+### Subir manualmente
 
 ```bash
 # forge-loop (criar do zero)
@@ -119,45 +120,33 @@ bash ~/forge/templates/fix-loop/setup-fix.sh ~/caminho/do/projeto
 ```
 forge/
 ├── .kiro/
-│   └── agents/
-│       └── forge-master.json      ← hub de entrada
+│   ├── agents/
+│   │   ├── forge-master.json          ← agente de entrada
+│   │   └── prompts/forge-master.md    ← instruções do orquestrador
+│   ├── skills/_shared/
+│   │   ├── orchestrator.md            ← regras de orquestração
+│   │   ├── no-deploy-no-push.md       ← regras de git/deploy
+│   │   └── ...
+│   └── steering/
+│       └── tester-rules.md            ← testes E2E obrigatórios com prints
 ├── templates/
-│   ├── forge-loop/                ← agentes de criação
-│   │   ├── agents/                ← configs dos agentes
-│   │   ├── prompts/               ← instruções de cada agente
-│   │   ├── skills/                ← conhecimento compartilhado
-│   │   └── setup-forge.sh         ← sobe a sessão tmux
-│   └── fix-loop/                  ← agentes de fix
-│       ├── agents/
-│       ├── prompts/
-│       ├── skills/
-│       └── setup-fix.sh
-└── projects/                      ← projetos criados ficam aqui
-    └── meu-app/
-        ├── prompt.md              ← spec gerada pelo Forge Master
-        └── ...
+│   ├── forge-loop/                    ← agentes de criação (setup-forge.sh)
+│   └── fix-loop/                      ← agentes de fix (setup-fix.sh)
+└── projects/                          ← projetos criados ficam aqui
 ```
 
 ---
 
-## Comandos úteis
+## Testes E2E — padrão obrigatório
 
-```bash
-# Ver sessões ativas
-tmux list-sessions
+O tester sempre roda testes E2E com Playwright e **tira prints de todas as telas** antes de aprovar qualquer implementação. Prints são analisados visualmente para detectar:
 
-# Acessar uma sessão
-tmux attach -t forge-meu-app
-tmux attach -t fix-meu-app
+- Layout quebrado ou desalinhado
+- Erros em mobile (375px) e desktop (1280px)
+- Estados de erro, loading e vazio
+- Contraste e legibilidade
 
-# Derrubar uma sessão
-tmux kill-session -t forge-meu-app
-
-# Ver o que cada agente está fazendo
-tmux capture-pane -t forge-meu-app:0.0 -p | tail -5   # tester
-tmux capture-pane -t forge-meu-app:0.1 -p | tail -5   # monitor
-tmux capture-pane -t forge-meu-app:0.2 -p | tail -5   # dev
-```
+Nenhuma feature é aprovada sem análise visual dos prints.
 
 ---
 
@@ -167,25 +156,12 @@ tmux capture-pane -t forge-meu-app:0.2 -p | tail -5   # dev
 ┌─────────────────────────────────────┐
 │  🧪 tester  (barra fina no topo)    │
 ├──────────────────┬──────────────────┤
-│                  │                  │
 │   👁 monitor     │   👷 dev         │
-│   (fale aqui)    │   (escreve kod)  │
 │                  │                  │
 └──────────────────┴──────────────────┘
 ```
 
-O foco abre no **monitor** — é com ele que você conversa.
-
----
-
-## Skills
-
-Os agentes têm acesso a um conjunto de skills (conhecimento especializado) copiadas automaticamente para cada projeto:
-
-- `no-deploy-no-push` — regras de segurança para git e deploy
-- `clean-code` — padrões de código
-- `safe-operations` — proteção de processos em andamento
-- `ui-design`, `react-patterns`, `tailwind`, etc. — skills de frontend
+Você não precisa acessar essa sessão — o Kiro monitora por você.
 
 ---
 
