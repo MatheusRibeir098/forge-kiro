@@ -1,0 +1,21 @@
+{
+  "name": "monitor-forge",
+  "description": "Monitor Forge — orquestra a criação de projetos do zero via loop dev→tester",
+  "prompt": "file://prompts/monitor-forge.md",
+  "tools": ["*"],
+  "mcpServers": {},
+  "allowedTools": [],
+  "resources": [
+    "file://.kiro/skills/_shared/code-review.md",
+    "file://.kiro/skills/_shared/agent-orchestration.md",
+    "file://.kiro/skills/_shared/clean-code.md",
+    "file://.kiro/skills/_shared/seguranca.md",
+    "file://.kiro/skills/_shared/safe-operations.md",
+    "file://.kiro/skills/_shared/no-deploy-no-push.md",
+    "file://.kiro/skills/_shared/spec-driven.md"
+  ],
+  "hooks": {},
+  "toolsSettings": {},
+  "includeMcpJson": false,
+  "model": "claude-sonnet-4.6"
+}

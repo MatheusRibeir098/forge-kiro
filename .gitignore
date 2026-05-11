@@ -1,0 +1,26 @@
+# Projetos e chats (conteúdo local, não sobe)
+projects/*
+!projects/.gitkeep
+chats/*
+!chats/.gitkeep
+
+# Dependências e ambientes
+node_modules/
+.venv/
+__pycache__/
+
+# Build artifacts
+layer_build/
+cdk.out/
+dist/
+build/
+
+# Secrets
+.env
+*.pem
+*.key
+
+# Logs
+*.log
+logs/
+*.m3u
