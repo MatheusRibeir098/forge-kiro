@@ -12,7 +12,8 @@
     "file://.kiro/skills/_shared/seguranca.md",
     "file://.kiro/skills/_shared/safe-operations.md",
     "file://.kiro/skills/_shared/no-deploy-no-push.md",
-    "file://.kiro/skills/_shared/spec-driven.md"
+    "file://.kiro/skills/_shared/spec-driven.md",
+    "file://.kiro/skills/_shared/search-before-code.md"
   ],
   "hooks": {},
   "toolsSettings": {},

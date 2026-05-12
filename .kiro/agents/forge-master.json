@@ -9,7 +9,10 @@
     "file://.kiro/skills/_shared/meta-prompt.md",
     "file://.kiro/skills/_shared/spec-driven.md",
     "file://.kiro/skills/_shared/safe-operations.md",
-    "file://.kiro/skills/_shared/no-deploy-no-push.md"
+    "file://.kiro/skills/_shared/no-deploy-no-push.md",
+    "file://.kiro/skills/_shared/orchestrator.md",
+    "file://.kiro/skills/_shared/git-profiles.md",
+    "file://.kiro/skills/_shared/search-before-code.md"
   ],
   "hooks": {},
   "toolsSettings": {},

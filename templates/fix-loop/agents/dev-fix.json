@@ -22,7 +22,8 @@
     "file://.kiro/skills/_shared/no-deploy-no-push.md",
     "file://.kiro/skills/_shared/free-apis.md",
     "file://.kiro/skills/frontend/performance-patterns.md",
-    "file://.kiro/skills/frontend/modern-design.md"
+    "file://.kiro/skills/frontend/modern-design.md",
+    "file://.kiro/skills/_shared/search-before-code.md"
   ],
   "hooks": {},
   "toolsSettings": {},
