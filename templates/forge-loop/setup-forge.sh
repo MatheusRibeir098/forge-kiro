@@ -57,6 +57,20 @@ tmux select-pane -t "$SESSION:0.2" -T "👷 dev"
 tmux set -t "$SESSION" pane-border-format " #{pane_title} "
 tmux set -t "$SESSION" pane-border-status top
 
+# Hook: injeta lembrete de papel no fim de toda mensagem enviada ao monitor
+send_to_monitor() {
+  local msg="$1"
+  local hook="
+
+---
+⚠️ REGRA DO SISTEMA: Você é o MONITOR. NÃO escreve código, NÃO cria/edita arquivos, NÃO executa comandos que alteram o projeto. Sua única ação permitida é: ler arquivos → montar briefing → enviar ao dev via tmux send-keys (pane $SESSION:0.2)."
+  tmux send-keys -t "$SESSION:0.1" "" Enter
+  sleep 0.5
+  tmux send-keys -t "$SESSION:0.1" "" Enter
+  sleep 0.5
+  tmux send-keys -t "$SESSION:0.1" "${msg}${hook}" Enter
+}
+
 # Iniciar agents
 sleep 0.5
 tmux send-keys -t "$SESSION:0.0" "kiro-cli chat --trust-all-tools --agent tester-forge" Enter
@@ -70,7 +84,26 @@ tmux select-pane -t "$SESSION:0.1"
 
 # Aguardar agents carregarem e enviar comando inicial pro monitor
 sleep 8
-tmux send-keys -t "$SESSION:0.1" "Leia o prompt.md do projeto e comece a construir." Enter
+send_to_monitor "Leia o prompt.md do projeto e comece a construir."
+
+# Gerar script auxiliar para enviar mensagens ao monitor com o hook injetado
+cat > "$PROJECT_DIR/send_to_monitor.sh" << SCRIPT
+#!/usr/bin/env bash
+# Uso: bash send_to_monitor.sh "sua mensagem aqui"
+SESSION="$SESSION"
+MSG="\$1"
+HOOK="
+
+---
+⚠️ REGRA DO SISTEMA: Você é o MONITOR. NÃO escreve código, NÃO cria/edita arquivos, NÃO executa comandos que alteram o projeto. Sua única ação permitida é: ler arquivos → montar briefing → enviar ao dev via tmux send-keys (pane \$SESSION:0.2)."
+tmux send-keys -t "\$SESSION:0.1" "" Enter
+sleep 0.5
+tmux send-keys -t "\$SESSION:0.1" "" Enter
+sleep 0.5
+tmux send-keys -t "\$SESSION:0.1" "\${MSG}\${HOOK}" Enter
+SCRIPT
+chmod +x "$PROJECT_DIR/send_to_monitor.sh"
 
 echo "✅ Sessão '$SESSION' criada com 3 panes (tester | monitor | dev)"
 echo "   tmux attach -t $SESSION   ← abre direto no monitor"
+echo "   bash send_to_monitor.sh \"mensagem\"   ← envia ao monitor com hook"

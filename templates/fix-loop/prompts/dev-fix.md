@@ -73,3 +73,16 @@ Consulte as skills em `.kiro/skills/frontend/` para referência detalhada:
 - Commits atômicos: uma mudança lógica por commit
 - Mensagem no imperativo: "Add user auth" não "Added user auth"
 - Nunca commitar arquivos de build, `.env`, `node_modules`
+
+## ⚠️ Hook de Segurança — Verificar ANTES de terminar
+
+Antes de considerar qualquer tarefa concluída, revise obrigatoriamente:
+
+- [ ] Há secrets, tokens ou senhas hardcodadas? → mover para variáveis de ambiente
+- [ ] Há `any` no TypeScript? → substituir por tipo correto ou `unknown` + type guard
+- [ ] Há `console.log` de debug? → remover
+- [ ] Há `catch(e) {}` vazio? → tratar o erro adequadamente
+- [ ] Inputs externos são validados antes de usar?
+- [ ] Queries SQL usam parâmetros (não concatenação de strings)?
+
+Se qualquer item falhar, corrija antes de parar.

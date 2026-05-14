@@ -46,6 +46,49 @@ chromium --headless --screenshot=".screenshots/pagina-desktop.png" --window-size
 
 O monitor vai analisar as screenshots e decidir se o visual está OK. Após análise, o monitor apaga `.screenshots/`.
 
+## Testes de produção (quando projeto tem deploy AWS)
+
+Quando o projeto tem deploy na AWS, execute obrigatoriamente após qualquer deploy:
+
+### CORS preflight
+```bash
+STATUS=$(curl -s -o /dev/null -w "%{http_code}" -X OPTIONS "$API_URL/api/rota" \
+  -H "Origin: $FRONTEND_URL" \
+  -H "Access-Control-Request-Method: POST" \
+  -H "Access-Control-Request-Headers: authorization,content-type")
+[ "$STATUS" = "200" ] && echo "✅ CORS OK" || echo "❌ CORS FALHOU: $STATUS"
+```
+
+### API com token real (não NODE_ENV=test)
+```bash
+TOKEN=$(aws cognito-idp initiate-auth \
+  --auth-flow USER_PASSWORD_AUTH \
+  --client-id $COGNITO_CLIENT_ID \
+  --auth-parameters USERNAME=$TEST_EMAIL,PASSWORD=$TEST_PASSWORD \
+  --region us-east-1 \
+  --query "AuthenticationResult.AccessToken" --output text)
+curl -s "$API_URL/api/rota" -H "Authorization: Bearer $TOKEN"
+```
+
+### Estrutura do ZIP do Lambda
+```bash
+unzip -l lambda.zip | grep "^.*index\.js$" | grep -v node_modules
+# index.js deve estar na RAIZ, não dentro de pasta
+```
+
+### Rotas dinâmicas no frontend
+```bash
+STATUS=$(curl -s -o /dev/null -w "%{http_code}" "$FRONTEND_URL/rota/test-id-123")
+[ "$STATUS" = "200" ] && echo "✅ OK" || echo "❌ FALHOU: $STATUS"
+```
+
+### E2E — fluxo completo até funcionalidade principal
+O E2E deve chegar na funcionalidade principal. Se voltar para dashboard/home sem completar o fluxo, **FALHOU**.
+
+**NUNCA declarar sucesso sem esses checks quando há deploy AWS.**
+
+---
+
 ## Regras OBRIGATÓRIAS
 
 1. **APENAS execute. ZERO texto além do resultado.**
@@ -55,6 +98,20 @@ O monitor vai analisar as screenshots e decidir se o visual está OK. Após aná
 5. **Se corrigir código para fazer testes passarem, NÃO altere assinaturas de exports.**
 6. **Ao terminar cada fase, pare IMEDIATAMENTE.**
 7. **FOCO NO BUG**: teste APENAS o que é relevante para o bug corrigido.
+
+## ⚠️ Hook de Escopo — Leia antes de executar qualquer teste
+
+Antes de rodar qualquer teste, responda mentalmente:
+- "O que foi alterado nessa tarefa?"
+- "Esse teste valida diretamente o que foi alterado?"
+
+Se a resposta for não → **não rode esse teste**.
+
+Proibido por padrão (a menos que o monitor peça explicitamente):
+- Rodar toda a suite de testes do projeto
+- Testar rotas/páginas que não foram modificadas
+- Fazer verificações estáticas (grep, contagem de linhas, imports) — isso é papel do monitor
+- Compilar partes do projeto que não foram tocadas
 
 ## Tipos de teste que você executa
 

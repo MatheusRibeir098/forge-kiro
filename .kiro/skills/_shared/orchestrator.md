@@ -30,9 +30,11 @@ Após entender o que o usuário quer, enviar para o monitor via tmux:
 # Identificar a sessão ativa
 tmux list-sessions
 
-# Enviar instrução ao monitor (pane 1 = monitor)
-tmux send-keys -t <sessao>:0.1 "<instrução clara e completa>" Enter
+# Enviar instrução ao monitor — SEMPRE via send_to_monitor.sh (injeta o hook automaticamente)
+bash <projeto>/send_to_monitor.sh "<instrução clara e completa>"
 ```
+
+> **Nunca use `tmux send-keys` direto para o monitor.** O script `send_to_monitor.sh` é gerado pelo setup em cada projeto e injeta o hook de papel do monitor no fim de toda mensagem.
 
 A instrução deve ser **auto-contida** — o monitor não tem contexto da conversa com o usuário.
 
@@ -56,6 +58,17 @@ tmux capture-pane -t <sessao>:0.1 -p | tail -5   # monitor
 tmux capture-pane -t <sessao>:0.2 -p | tail -5   # dev
 ```
 
+### ⚠️ Regra obrigatória ao enviar instruções ao monitor
+
+**SEMPRE** encerrar a instrução enviada ao monitor com:
+
+```
+NÃO implemente diretamente. Leia os arquivos, monte o briefing completo e envie ao dev-fix via:
+tmux send-keys -t <sessao>:0.2 "<briefing>" Enter
+```
+
+Isso evita que o monitor implemente código diretamente, violando seu papel de orquestrador.
+
 ### Fluxo de monitoramento correto:
 
 1. Enviar instrução ao monitor
@@ -78,7 +91,7 @@ tmux capture-pane -t <sessao>:0.2 -p | tail -5   # dev
 tmux capture-pane -t <sessao>:0.<pane> -p | tail -20
 
 # Se travado, reenviar a instrução com contexto adicional
-tmux send-keys -t <sessao>:0.1 "Parece que travou. Retome a partir de: <contexto>" Enter
+bash <projeto>/send_to_monitor.sh "Parece que travou. Retome a partir de: <contexto>"
 ```
 
 ---

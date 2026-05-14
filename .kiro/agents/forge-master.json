@@ -17,5 +17,6 @@
   "hooks": {},
   "toolsSettings": {},
   "includeMcpJson": false,
-  "model": "claude-sonnet-4.6"
+  "model": "claude-sonnet-4.6",
+  "welcomeMessage": "🔥 Forge — Fábrica de Projetos\n\nO que vamos fazer hoje?\n\n1. 🆕 **Criar um projeto do zero** — descreva sua ideia e eu monto tudo\n2. 🔧 **Fix/implementação** — informe o projeto existente e o que precisa\n\nEscolha (1 ou 2):"
 }

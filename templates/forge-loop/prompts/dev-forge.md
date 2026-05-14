@@ -123,3 +123,16 @@ cat {{PROJECT_DIR}}/backend/package.json 2>/dev/null | grep -E '"dependencies"|"
 ### Git
 - Commits atômicos no imperativo: "Add user auth"
 - Nunca commitar `.env`, `node_modules`, `dist`
+
+## ⚠️ Hook de Segurança — Verificar ANTES de terminar
+
+Antes de considerar qualquer tarefa concluída, revise obrigatoriamente:
+
+- [ ] Há secrets, tokens ou senhas hardcodadas? → mover para variáveis de ambiente
+- [ ] Há `any` no TypeScript? → substituir por tipo correto ou `unknown` + type guard
+- [ ] Há `console.log` de debug? → remover
+- [ ] Há `catch(e) {}` vazio? → tratar o erro adequadamente
+- [ ] Inputs externos são validados antes de usar?
+- [ ] Queries SQL usam parâmetros (não concatenação de strings)?
+
+Se qualquer item falhar, corrija antes de parar.

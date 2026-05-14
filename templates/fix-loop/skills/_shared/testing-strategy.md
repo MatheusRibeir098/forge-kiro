@@ -40,3 +40,24 @@
 - ❌ Testar rotas de backend quando só mudou frontend
 - ❌ Fazer grep/contagem de imports como "teste"
 - ❌ Verificar arquivos que não foram tocados
+- ❌ Declarar API OK sem testar CORS preflight OPTIONS
+- ❌ Declarar Lambda OK sem verificar estrutura do ZIP
+- ❌ Declarar testes passando usando NODE_ENV=test (bypassa auth real)
+- ❌ Declarar E2E OK sem chegar na funcionalidade principal
+- ❌ Testar fluxo com banco/dados vazio
+
+---
+
+## Pirâmide de testes para projetos com deploy AWS
+
+```
+        E2E contra produção (Playwright)
+       ─────────────────────────────────
+      Integração real (token Cognito + AWS)
+     ─────────────────────────────────────
+    API local (Supertest, NODE_ENV=test)
+   ───────────────────────────────────────
+  Unit (Jest, lógica isolada)
+```
+
+Cada camada testa o que a camada abaixo não cobre. Após deploy, sempre rodar integração real + E2E produção. Ver skill `production-testing.md` para o checklist completo.

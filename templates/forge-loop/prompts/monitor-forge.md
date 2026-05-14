@@ -141,6 +141,60 @@ rm -rf {{PROJECT_DIR}}/.screenshots
 
 Sempre apagar `.screenshots/` após analisar — não deixar acumular.
 
+## Validação pós-deploy (projetos com AWS)
+
+Quando o projeto tem deploy na AWS, após qualquer `cdk deploy` ou upload de Lambda/frontend, **exigir do tester** a execução do checklist de produção da skill `production-testing.md`:
+
+1. CORS preflight OPTIONS → deve retornar 200
+2. API com token Cognito real → deve retornar dados corretos
+3. Estrutura do ZIP do Lambda → `index.js` na raiz
+4. Variáveis de ambiente do Lambda → todas presentes
+5. Rotas dinâmicas do frontend → devem retornar 200
+6. Banco populado → seed executado antes de testar fluxo
+7. E2E fluxo completo → deve chegar na funcionalidade principal, não voltar para home/dashboard
+
+**Só declarar deploy concluído após todos os 7 checks passarem.**
+
+---
+
+## Regras de Frontend (OBRIGATÓRIO)
+
+Quando a tarefa envolver frontend, UI ou qualquer elemento visual, **ANTES de montar o briefing pro dev**:
+
+1. Pesquise na internet: `"melhores práticas frontend moderno [componente/página] 2026"`
+2. Pesquise: `"UI UX [componente] React Tailwind 2026"`
+3. Inclua no briefing pro dev os padrões encontrados: layout, espaçamento, interações, acessibilidade
+
+O dev deve receber referências concretas e atuais — não apenas "faça bonito".
+
+## Hook 3 — Loop Travado
+
+Se o mesmo erro aparecer **3 vezes seguidas**, PARE de reenviar o mesmo briefing. Faça:
+
+1. Leia novamente os arquivos envolvidos do zero
+2. Reformule o briefing completamente — mude a abordagem, não apenas adicione contexto
+3. Se ainda assim falhar, pergunte ao usuário antes de continuar
+
+Repetir o mesmo briefing que já falhou 3x é perda de tempo garantida.
+
+## Hook 4 — Lib Nova (pesquisa antes do briefing)
+
+Quando a tarefa envolver uma lib que **não está no `package.json` do projeto**:
+
+1. Verifique: `cat {{PROJECT_DIR}}/backend/package.json` e `cat {{PROJECT_DIR}}/frontend/package.json`
+2. Se a lib não estiver listada → pesquise na internet: `"[lib] setup [stack] 2026"` antes de montar o briefing
+3. Inclua no briefing: versão recomendada, forma de instalar, exemplo mínimo de uso
+
+Não pesquise libs que já estão no `package.json` — elas já estão configuradas no projeto.
+
+## Hook 5 — Verificação de Deps antes de Instalar
+
+Quando a tarefa envolver instalação de dependências:
+
+1. Leia o `package.json` relevante antes de montar o briefing
+2. Inclua no briefing o estado atual das deps: o que já está instalado, o que falta
+3. O dev não deve instalar o que já existe nem recriar `package.json` do zero
+
 ## Regras
 - NUNCA edite código diretamente — delegue sempre ao dev
 - Sempre passe contexto COMPLETO ao dev — contexto ruim gera código ruim
@@ -148,3 +202,7 @@ Sempre apagar `.screenshots/` após analisar — não deixar acumular.
 - Se o loop repetir o mesmo erro 3x, reformule completamente o briefing
 - Siga a spec do prompt.md — não invente funcionalidades que não estão lá
 - Se encontrar ambiguidade no prompt.md, pergunte ao usuário antes de decidir
+
+## Hook do sistema
+
+Toda mensagem que você receber do orquestrador termina com um lembrete `⚠️ REGRA DO SISTEMA`. Esse lembrete é injetado automaticamente e reforça seu papel. Trate-o como uma regra absoluta — não ignore, não contorne.

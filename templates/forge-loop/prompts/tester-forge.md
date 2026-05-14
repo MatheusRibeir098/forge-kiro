@@ -100,6 +100,59 @@ chromium --headless --screenshot=".screenshots/pagina-mobile.png" --window-size=
 
 O monitor vai analisar as screenshots e decidir se o visual está OK. Após análise, o monitor apaga a pasta `.screenshots/`.
 
+## Testes de produção (quando projeto tem deploy AWS)
+
+Quando o projeto tem deploy na AWS, **além dos testes locais**, execute obrigatoriamente:
+
+### 1. CORS preflight
+```bash
+STATUS=$(curl -s -o /dev/null -w "%{http_code}" -X OPTIONS "$API_URL/api/exams" \
+  -H "Origin: $FRONTEND_URL" \
+  -H "Access-Control-Request-Method: POST" \
+  -H "Access-Control-Request-Headers: authorization,content-type")
+[ "$STATUS" = "200" ] && echo "✅ CORS OK" || echo "❌ CORS FALHOU: $STATUS"
+```
+
+### 2. API com token Cognito real (não NODE_ENV=test)
+```bash
+TOKEN=$(aws cognito-idp initiate-auth \
+  --auth-flow USER_PASSWORD_AUTH \
+  --client-id $COGNITO_CLIENT_ID \
+  --auth-parameters USERNAME=$TEST_EMAIL,PASSWORD=$TEST_PASSWORD \
+  --region us-east-1 \
+  --query "AuthenticationResult.AccessToken" --output text)
+curl -s -X POST "$API_URL/api/exams" \
+  -H "Authorization: Bearer $TOKEN" \
+  -H "Content-Type: application/json" \
+  -d '{"cert":"CLF-C02","mode":"custom","questionCount":10,"lang":"pt","feedbackMode":"final"}'
+```
+
+### 3. Estrutura do ZIP do Lambda
+```bash
+# index.js deve estar na RAIZ, não dentro de pasta
+unzip -l lambda.zip | grep "^.*index\.js$" | grep -v node_modules
+```
+
+### 4. Rotas dinâmicas no frontend
+```bash
+STATUS=$(curl -s -o /dev/null -w "%{http_code}" "$FRONTEND_URL/exam/test-uuid-123")
+[ "$STATUS" = "200" ] && echo "✅ Rota dinâmica OK" || echo "❌ FALHOU: $STATUS"
+```
+
+### 5. E2E Playwright — fluxo completo até funcionalidade principal
+O E2E **deve chegar na funcionalidade principal** (ex: questão do simulado, não só dashboard).
+Se a URL não mudar para `/exam/UUID` após clicar em Iniciar, o teste **FALHOU**.
+
+### 6. Banco populado
+```bash
+COUNT=$(aws dynamodb scan --table-name $TABLE --select COUNT --query "Count" --output text)
+[ "$COUNT" -gt "0" ] && echo "✅ $COUNT itens" || echo "❌ Banco vazio — rode o seed"
+```
+
+**NUNCA declarar sucesso sem executar esses checks quando há deploy AWS.**
+
+---
+
 ## Regras OBRIGATÓRIAS
 
 1. **APENAS execute. ZERO texto além do resultado.**
@@ -107,6 +160,20 @@ O monitor vai analisar as screenshots e decidir se o visual está OK. Após aná
 3. **NUNCA rode `tmux kill-server`** — use APENAS `tmux kill-session -t servers`.
 4. **NUNCA suba servidores com `&` ou `nohup`** — use APENAS `tmux new-session -d -s servers`.
 5. **Ao terminar, pare IMEDIATAMENTE.**
+
+## ⚠️ Hook de Escopo — Leia antes de executar qualquer teste
+
+Antes de rodar qualquer teste, responda mentalmente:
+- "O que foi pedido para testar nessa tarefa?"
+- "Esse teste valida diretamente o que foi implementado?"
+
+Se a resposta for não → **não rode esse teste**.
+
+Proibido por padrão (a menos que o monitor peça explicitamente):
+- Rodar toda a suite de testes do projeto
+- Testar rotas/páginas que não foram implementadas nessa tarefa
+- Fazer verificações estáticas (grep, contagem de linhas) — isso é papel do monitor
+- Compilar partes do projeto que não foram tocadas nessa tarefa
 
 ## Como reportar resultado
 
