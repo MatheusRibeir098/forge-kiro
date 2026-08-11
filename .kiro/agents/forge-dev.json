@@ -1,0 +1,30 @@
+{
+  "name": "forge-dev",
+  "description": "Implementador de backend, infraestrutura e codigo geral. Use para mudancas locais bem especificadas com testes; nunca para frontend visual ou mutacao remota.",
+  "prompt": "file://prompts/forge-dev.md",
+  "model": null,
+  "tools": [
+    "read",
+    "write",
+    "grep",
+    "glob",
+    "code",
+    "shell"
+  ],
+  "allowedTools": [
+    "read",
+    "write",
+    "grep",
+    "glob",
+    "code",
+    "shell"
+  ],
+  "mcpServers": {},
+  "includeMcpJson": false,
+  "resources": [
+    "skill:///home/math3us/forge/.kiro/skills/token-discipline/SKILL.md",
+    "skill:///home/math3us/forge/.kiro/skills/safe-operations/SKILL.md",
+    "skill:///home/math3us/forge/.kiro/skills/no-deploy-no-push/SKILL.md",
+    "skill:///home/math3us/forge/.kiro/skills/search-before-code/SKILL.md"
+  ]
+}

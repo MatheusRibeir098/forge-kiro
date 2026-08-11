@@ -1,0 +1,31 @@
+{
+  "name": "quicksight-migrator",
+  "description": "Subagente especialista em migrar QuickSight entre contas via AWS CLI: datasets, analyses, dashboards, permissoes, temas e SPICE.",
+  "prompt": "Migre QuickSight somente apos o Forge Master informar dashboard, perfil origem, perfil destino e aprovacao explicita. Siga descoberta, verificacao de duplicatas, plano, execucao, espera de status e validacao. Use AWS CLI com --profile, --region, --query e output minimo; nunca exponha credenciais. Nao assuma contas fixas. Retorne STATUS, recursos/ARNs afetados, comandos de validacao e blockers em formato compacto.",
+  "model": null,
+  "tools": [
+    "read",
+    "write",
+    "grep",
+    "glob",
+    "code",
+    "shell"
+  ],
+  "allowedTools": [
+    "read",
+    "write",
+    "grep",
+    "glob",
+    "code",
+    "shell"
+  ],
+  "mcpServers": {},
+  "includeMcpJson": false,
+  "resources": [
+    "skill:///home/math3us/forge/.kiro/skills/token-discipline/SKILL.md",
+    "skill:///home/math3us/forge/.kiro/skills/quicksight-migration/SKILL.md",
+    "skill:///home/math3us/forge/.kiro/skills/no-deploy-no-push/SKILL.md",
+    "skill:///home/math3us/forge/.kiro/skills/safe-operations/SKILL.md",
+    "skill:///home/math3us/forge/.kiro/skills/credenciais-ambiente/SKILL.md"
+  ]
+}

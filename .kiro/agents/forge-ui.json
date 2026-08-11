@@ -1,0 +1,64 @@
+{
+  "name": "forge-ui",
+  "description": "Implementador de frontend visual. Use para paginas, componentes, responsividade, acessibilidade e validacao por screenshot; nao toca backend.",
+  "prompt": "file://prompts/forge-ui.md",
+  "model": null,
+  "tools": [
+    "read",
+    "write",
+    "grep",
+    "glob",
+    "code",
+    "shell",
+    "@forge-frontend/get_design_guidelines",
+    "@forge-frontend/get_ux_blueprint",
+    "@forge-frontend/get_redesign_plan",
+    "@forge-frontend/generate_palette",
+    "@forge-frontend/get_typography",
+    "@forge-frontend/search_components",
+    "@forge-frontend/get_animation",
+    "@forge-frontend/search_photos",
+    "@forge-frontend/check_visual_consistency",
+    "@forge-frontend/detect_slop"
+  ],
+  "allowedTools": [
+    "read",
+    "write",
+    "grep",
+    "glob",
+    "code",
+    "shell",
+    "@forge-frontend/get_design_guidelines",
+    "@forge-frontend/get_ux_blueprint",
+    "@forge-frontend/get_redesign_plan",
+    "@forge-frontend/generate_palette",
+    "@forge-frontend/get_typography",
+    "@forge-frontend/search_components",
+    "@forge-frontend/get_animation",
+    "@forge-frontend/search_photos",
+    "@forge-frontend/check_visual_consistency",
+    "@forge-frontend/detect_slop"
+  ],
+  "mcpServers": {
+    "forge-frontend": {
+      "url": "https://ahk2rphf6qsccwc5wwv333lxiu0yjgtq.lambda-url.us-east-1.on.aws/mcp"
+    }
+  },
+  "includeMcpJson": false,
+  "resources": [
+    "skill:///home/math3us/forge/.kiro/skills/token-discipline/SKILL.md",
+    "skill:///home/math3us/forge/.kiro/skills/no-deploy-no-push/SKILL.md"
+  ],
+  "toolsSettings": {
+    "write": {
+      "deniedPaths": [
+        "**/api/**",
+        "**/server/**",
+        "**/backend/**",
+        "**/infra/**",
+        "**/db/**",
+        "**/middleware*"
+      ]
+    }
+  }
+}

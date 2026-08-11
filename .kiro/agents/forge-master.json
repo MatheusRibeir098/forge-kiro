@@ -1,18 +1,69 @@
 {
   "name": "forge-master",
-  "description": "Forge Master — hub inicial que direciona para criação ou fix de projetos",
+  "description": "Orquestrador central do Forge. Unico agente com quem o usuario conversa; planeja DAGs e delega investigacao, specs, implementacao, testes, review, UI, issues, QuickSight e pentest.",
   "prompt": "file://prompts/forge-master.md",
-  "tools": ["*"],
-  "mcpServers": {},
-  "allowedTools": [],
-  "resources": [
-    "file://.kiro/skills/_shared/meta-prompt.md",
-    "file://.kiro/skills/_shared/spec-driven.md",
-    "file://.kiro/skills/_shared/safe-operations.md",
-    "file://.kiro/skills/_shared/no-deploy-no-push.md"
+  "model": "auto",
+  "tools": [
+    "read",
+    "grep",
+    "glob",
+    "code",
+    "shell",
+    "subagent",
+    "todo_list"
   ],
-  "hooks": {},
-  "toolsSettings": {},
+  "allowedTools": [
+    "read",
+    "grep",
+    "glob",
+    "code",
+    "shell",
+    "subagent",
+    "todo_list"
+  ],
+  "mcpServers": {},
   "includeMcpJson": false,
-  "model": "claude-sonnet-4.6"
+  "resources": [
+    "skill:///home/math3us/forge/.kiro/skills/forge-orchestration/SKILL.md",
+    "skill:///home/math3us/forge/.kiro/skills/meta-prompt/SKILL.md",
+    "skill:///home/math3us/forge/.kiro/skills/spec-driven/SKILL.md",
+    "skill:///home/math3us/forge/.kiro/skills/safe-operations/SKILL.md",
+    "skill:///home/math3us/forge/.kiro/skills/no-deploy-no-push/SKILL.md",
+    "skill:///home/math3us/forge/.kiro/skills/git-profiles/SKILL.md",
+    "skill:///home/math3us/forge/.kiro/skills/search-before-code/SKILL.md",
+    "skill:///home/math3us/forge/.kiro/skills/credenciais-ambiente/SKILL.md"
+  ],
+  "toolsSettings": {
+    "subagent": {
+      "availableAgents": [
+        "forge-scout",
+        "forge-spec",
+        "forge-dev",
+        "forge-test",
+        "forge-review",
+        "forge-ui",
+        "forge-issue",
+        "forge-epic-planner",
+        "forge-epic-decomposer",
+        "quicksight-builder",
+        "quicksight-migrator",
+        "forge-pentest"
+      ],
+      "trustedAgents": [
+        "forge-scout",
+        "forge-spec",
+        "forge-dev",
+        "forge-test",
+        "forge-review",
+        "forge-ui",
+        "forge-issue",
+        "forge-epic-planner",
+        "forge-epic-decomposer",
+        "quicksight-builder",
+        "quicksight-migrator",
+        "forge-pentest"
+      ]
+    }
+  },
+  "welcomeMessage": "Forge pronto. Descreva o projeto e o resultado desejado; eu coordeno os subagentes, testes e revisao sem tmux."
 }

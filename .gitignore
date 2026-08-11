@@ -1,26 +1,73 @@
-# Projetos e chats (conteúdo local, não sobe)
+# ==== PROJETOS LOCAIS (repos separados, NÃO sobem) ====
 projects/*
 !projects/.gitkeep
+bonetti-core/
+dati-data-platform/
+pv-agents-aws/
+
+# ==== CHATS E SESSÕES ====
 chats/*
 !chats/.gitkeep
+*-session.json
+chats.json
+chatsMCP.json
+skills-lock.json
 
-# Dependências e ambientes
+# ==== SECRETS E CREDENCIAIS ====
+.env
+.env.*
+*.pem
+*.key
+.google-sa.json
+*.p12
+*credentials*.json
+*secret*.json
+*token*.json
+
+# ==== KIRO SESSIONS E CACHE ====
+.kiro/sessions/
+.kiro/logs/
+.kiro/settings/survey_state.json
+.kiro/settings/feed_state.json
+.kiro/settings/kiro_cli_theme.json
+
+# ==== DEPENDÊNCIAS E BUILD ====
 node_modules/
 .venv/
 __pycache__/
-
-# Build artifacts
 layer_build/
 cdk.out/
 dist/
 build/
+*.egg-info/
 
-# Secrets
-.env
-*.pem
-*.key
-
-# Logs
+# ==== LOGS ====
 *.log
 logs/
+
+# ==== IMAGENS E MÍDIA (temporárias) ====
+*.jpeg
+*.png
 *.m3u
+form-screenshots/
+.screenshots/
+
+# ==== DADOS DE TESTE ====
+tpch-data/
+*-b64.txt
+shot-b64.txt
+
+# ==== OUTROS ====
+\\wsl.localhost*
+calculadora-grafica-3d/
+dati-mcp-datalake/
+Teste Tiflux/
+Automação.json
+Teste.json
+
+# ==== BACKUP ====
+*.tar.gz
+
+# ==== CREDENCIAIS E CONFIG LOCAL ====
+.kiro/skills/credenciais-ambiente
+.kiro/settings/mcp.json

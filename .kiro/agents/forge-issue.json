@@ -1,0 +1,25 @@
+{
+  "name": "forge-issue",
+  "description": "Operador GitHub focado. Use apos aprovacao para criar ou editar issues detalhadas via gh CLI, sem MCP e sem alterar codigo.",
+  "prompt": "file://prompts/forge-issue.md",
+  "model": null,
+  "tools": [
+    "read",
+    "grep",
+    "glob",
+    "shell"
+  ],
+  "allowedTools": [
+    "read",
+    "grep",
+    "glob",
+    "shell"
+  ],
+  "mcpServers": {},
+  "includeMcpJson": false,
+  "resources": [
+    "skill:///home/math3us/forge/.kiro/skills/token-discipline/SKILL.md",
+    "skill:///home/math3us/forge/.kiro/skills/git-profiles/SKILL.md",
+    "skill:///home/math3us/forge/.kiro/skills/no-deploy-no-push/SKILL.md"
+  ]
+}

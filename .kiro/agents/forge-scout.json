@@ -1,0 +1,29 @@
+{
+  "name": "forge-scout",
+  "description": "Investigador read-only e barato. Use para localizar simbolos, mapear arquitetura, reunir evidencias e pesquisar APIs sem poluir o contexto principal.",
+  "prompt": "file://prompts/forge-scout.md",
+  "model": null,
+  "tools": [
+    "read",
+    "grep",
+    "glob",
+    "code",
+    "shell",
+    "web_search",
+    "web_fetch"
+  ],
+  "allowedTools": [
+    "read",
+    "grep",
+    "glob",
+    "code",
+    "shell",
+    "web_search",
+    "web_fetch"
+  ],
+  "mcpServers": {},
+  "includeMcpJson": false,
+  "resources": [
+    "skill:///home/math3us/forge/.kiro/skills/token-discipline/SKILL.md"
+  ]
+}

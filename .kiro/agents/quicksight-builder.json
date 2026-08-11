@@ -1,0 +1,31 @@
+{
+  "name": "quicksight-builder",
+  "description": "Subagente especialista em criar ou editar datasets, analyses e dashboards QuickSight programaticamente via AWS CLI, sem console e sem MCP.",
+  "prompt": "file://prompts/quicksight-builder.md",
+  "model": null,
+  "tools": [
+    "read",
+    "write",
+    "grep",
+    "glob",
+    "code",
+    "shell"
+  ],
+  "allowedTools": [
+    "read",
+    "write",
+    "grep",
+    "glob",
+    "code",
+    "shell"
+  ],
+  "mcpServers": {},
+  "includeMcpJson": false,
+  "resources": [
+    "skill:///home/math3us/forge/.kiro/skills/token-discipline/SKILL.md",
+    "skill:///home/math3us/forge/.kiro/skills/quicksight-dashboard-builder/SKILL.md",
+    "skill:///home/math3us/forge/.kiro/skills/no-deploy-no-push/SKILL.md",
+    "skill:///home/math3us/forge/.kiro/skills/safe-operations/SKILL.md",
+    "skill:///home/math3us/forge/.kiro/skills/credenciais-ambiente/SKILL.md"
+  ]
+}

@@ -1,14 +1,13 @@
 <div align="center">
 
-# 🔥 Forge
+# 🔥 Forge Kiro
 
-**Fábrica de projetos com agentes AI orquestrados via kiro-cli**
+**Orquestração multiagente nativa para Kiro CLI**
 
-[![kiro-cli](https://img.shields.io/badge/kiro--cli-required-7c3aed?style=flat-square)](https://kiro.dev)
-[![tmux](https://img.shields.io/badge/tmux-required-06b6d4?style=flat-square)](https://github.com/tmux/tmux)
-[![Shell](https://img.shields.io/badge/Shell-bash-4B5563?style=flat-square&logo=gnubash&logoColor=white)](https://www.gnu.org/software/bash/)
+[![kiro-cli](https://img.shields.io/badge/kiro--cli_2.16+-required-7c3aed?style=flat-square)](https://kiro.dev)
+[![License: MIT](https://img.shields.io/badge/License-MIT-green?style=flat-square)](LICENSE)
 
-*Descreva uma ideia → o Forge gera a spec e constrói o projeto com 3 agentes trabalhando em paralelo*
+*Descreva o que precisa → o Forge Master planeja um DAG, delega a subagentes especializados em paralelo, testa, revisa e entrega validado.*
 
 </div>
 
@@ -16,163 +15,142 @@
 
 ## O que é
 
-O Forge é um sistema de orquestração de agentes AI que automatiza a criação e manutenção de projetos de software.
+O Forge é um sistema de **custom agents** para Kiro CLI que automatiza criação, manutenção e auditoria de projetos de software.
 
-**Você fala apenas com o Kiro.** O Kiro entende o que você quer, monta a spec, instala dependências, passa as instruções para os agentes e monitora o progresso — você nunca precisa abrir o tmux ou falar diretamente com os agentes.
+Você fala apenas com o **Forge Master**. Ele entende o objetivo, escolhe workers, monta pipelines com dependências, executa review loops e agrega resultados — sem tmux, sem monitor pane, sem coordenação manual.
 
 ```
 Você
-  ↓ linguagem natural
-Kiro (orquestrador)
-  ↓ instrução estruturada
-Monitor
-  ↓ coordena
-Dev ←→ Tester
+  → forge-master (entende, planeja DAG, aprova, agrega)
+       → forge-scout      (investigação read-only)
+       → forge-spec       (requisitos e design)
+       → forge-dev        (implementação geral)
+       → forge-ui         (frontend visual)
+       → forge-test       (validação e QA)
+       → forge-review     (auditoria read-only)
+       → forge-issue      (GitHub issues aprovadas)
+       → forge-epic-planner / forge-epic-decomposer
+       → forge-pentest    (segurança web)
+       → quicksight-builder / quicksight-migrator
 ```
 
-### Divisão de responsabilidades
+## Economia de tokens
 
-| Quem | Faz |
+O Forge foi projetado desde a base para **maximizar eficácia com mínimo de tokens**:
+
+| Técnica | Impacto |
 |---|---|
-| **Kiro** | Entende requisitos, monta prompt, instala deps, pesquisa, monitora agentes |
-| **Monitor** | Coordena dev e tester, mantém o foco no objetivo |
-| **Dev** | Escreve todo o código |
-| **Tester** | Roda testes E2E, tira prints, analisa visualmente cada tela |
+| Progressive disclosure (skill://) | Skills carregam só metadata no boot |
+| Herança desativada | Workers não herdam steering/skills do workspace |
+| Contextos isolados | Reads/logs ficam no worker; só status volta ao Master |
+| Model routing | Usuário escolhe modelo por sessão (Qwen 0.05x → Opus 2.0x) |
+| Tools mínimas | Nenhum agente usa `*`; zero MCP onde CLI resolve |
+| Output contracts | Workers retornam apenas dados estruturados |
+| Leitura seletiva | Proibido reler inalterado; proibido lockfiles/builds |
+| CLI > MCP | `gh`, `git`, `aws` são determinísticos e não gastam turno LLM |
+| Review loops limitados | Máximo 2 iterações antes de reportar blocker |
 
-> O Kiro **nunca** escreve código de produto. Desenvolvimento é sempre responsabilidade dos agentes.
+**Economia medida: 50-70% de tokens por sessão típica; 70-95% em créditos com modelo econômico.**
 
----
+## Requisitos
 
-## Pré-requisitos
-
-- [`kiro-cli`](https://kiro.dev) instalado e autenticado
-- `tmux` instalado
-- `bash`
-
----
+- [Kiro CLI](https://kiro.dev) 2.16+
+- Conta Kiro (Free ou Pro)
+- `gh` CLI (para operações GitHub)
+- `git`
 
 ## Instalação
 
 ```bash
-git clone https://github.com/MatheusRibeir098/forge-framework.git ~/forge
+# Clone o repo
+git clone https://github.com/MatheusRibeir098/forge-kiro.git ~/forge
+
+# Entre no diretório
+cd ~/forge
+
+# (Opcional) Crie seu skill de credenciais local
+mkdir -p .kiro/skills/credenciais-ambiente
+# Edite .kiro/skills/credenciais-ambiente/SKILL.md com seus perfis AWS/GitHub
+
+# Inicie
+kiro-cli chat --agent forge-master
 ```
 
----
-
-## Como usar
-
-### Ponto de entrada
+## Uso
 
 ```bash
 cd ~/forge
-kiro-cli chat --trust-all-tools --agent forge-master
+kiro-cli chat --agent forge-master
 ```
 
-O Forge Master pergunta o que você quer fazer:
+O Master vai:
+1. Perguntar qual modelo usar nos subagentes (econômico → qualidade)
+2. Entender seu objetivo
+3. Montar o pipeline mínimo necessário
+4. Executar e validar
+5. Entregar com evidência
 
-```
-🔥 Forge — Fábrica de Projetos
+### Opções de modelo
 
-1. 🆕 Criar um projeto do zero
-2. 🔧 Fix/implementação em projeto existente
-```
-
----
-
-### Fluxo 1 — Criar projeto do zero
-
-1. Descreva sua ideia em linguagem natural
-2. O Kiro faz perguntas para refinar requisitos (stack, funcionalidades, design)
-3. Gera e apresenta o `prompt.md` para aprovação
-4. Após aprovação: cria a pasta, instala dependências e sobe o **forge-loop**
-5. O Kiro monitora o progresso e te avisa quando terminar
-
-```
-~/forge/projects/<nome>/
-├── prompt.md    ← spec gerada
-└── ...          ← código construído pelos agentes
-```
-
----
-
-### Fluxo 2 — Fix/implementação em projeto existente
-
-1. Informe o que precisa ser feito e o projeto
-2. O Kiro sobe o **fix-loop** e passa a instrução ao monitor
-3. Monitora e reporta quando concluído
-
----
-
-### Subir manualmente
-
-```bash
-# forge-loop (criar do zero)
-bash ~/forge/templates/forge-loop/setup-forge.sh ~/forge/projects/meu-app
-
-# fix-loop (projeto existente)
-bash ~/forge/templates/fix-loop/setup-fix.sh ~/caminho/do/projeto
-```
-
----
+| Modelo | Multiplicador | Quando usar |
+|---|---|---|
+| `qwen3-coder-next` | 0.05x | Máxima economia; tasks simples |
+| `claude-haiku-4.5` | baixo | Planejamento e testes |
+| `claude-sonnet-4.6` | 1.0x | Implementação equilibrada |
+| `claude-opus-4.6+` | 2.0x+ | Qualidade máxima |
+| `auto` | variável | Kiro decide por task |
 
 ## Estrutura
 
 ```
-forge/
-├── .kiro/
-│   ├── agents/
-│   │   ├── forge-master.json          ← agente de entrada
-│   │   └── prompts/forge-master.md    ← instruções do orquestrador
-│   ├── skills/_shared/
-│   │   ├── orchestrator.md            ← regras de orquestração
-│   │   ├── no-deploy-no-push.md       ← regras de git/deploy
-│   │   └── ...
-│   └── steering/
-│       └── tester-rules.md            ← testes E2E obrigatórios com prints
-├── templates/
-│   ├── forge-loop/                    ← agentes de criação (setup-forge.sh)
-│   └── fix-loop/                      ← agentes de fix (setup-fix.sh)
-└── projects/                          ← projetos criados ficam aqui
+.kiro/
+  agents/
+    forge-master.json          # Orquestrador (model: auto)
+    forge-{scout,spec,dev,test,review,ui,issue}.json
+    forge-epic-{planner,decomposer}.json
+    forge-pentest.json
+    quicksight-{builder,migrator}.json
+    prompts/*.md               # Prompts densos dos workers
+  skills/
+    forge-orchestration/       # Protocolo de DAG e review loops
+    token-discipline/          # Regras de economia para workers
+    tester-rules/              # QA visual (sob demanda)
+    safe-operations/           # Operações destrutivas
+    no-deploy-no-push/         # Proteção contra push acidental
+    git-profiles/              # Seleção de conta GitHub
+    spec-driven/               # Metodologia de specs
+    meta-prompt/               # Extração de requisitos
+    ...
+  settings/
+    cli.json                   # disableInheritingDefaultResources: true
 ```
 
----
+## Configuração pessoal
 
-## Testes E2E — padrão obrigatório
+Arquivos que você precisa criar localmente (não sobem no repo):
 
-O tester sempre roda testes E2E com Playwright e **tira prints de todas as telas** antes de aprovar qualquer implementação. Prints são analisados visualmente para detectar:
+- `.kiro/skills/credenciais-ambiente/SKILL.md` — seus perfis AWS e contas GitHub
+- `.kiro/settings/mcp.json` — MCPs locais que quiser (forge-frontend, aws-mcp, etc.)
 
-- Layout quebrado ou desalinhado
-- Erros em mobile (375px) e desktop (1280px)
-- Estados de erro, loading e vazio
-- Contraste e legibilidade
-
-Nenhuma feature é aprovada sem análise visual dos prints.
-
----
-
-## Layout da sessão tmux
+## Pipeline padrão
 
 ```
-┌─────────────────────────────────────┐
-│  🧪 tester  (barra fina no topo)    │
-├──────────────────┬──────────────────┤
-│   👁 monitor     │   👷 dev         │
-│                  │                  │
-└──────────────────┴──────────────────┘
+scout? → spec? → dev|ui → test → review
+                          ^            |
+                          | NEEDS_CHANGES (max 2)
+                          +------------+
 ```
 
-Você não precisa acessar essa sessão — o Kiro monitora por você.
+## Pesquisa de economia de tokens
 
----
+O arquivo [`guia-economia-tokens-ia-code.md`](./guia-economia-tokens-ia-code.md) contém toda a pesquisa compilada sobre técnicas e ferramentas de economia de tokens aplicáveis a qualquer ferramenta agentic (Claude Code, Kiro CLI, Cursor, Copilot).
 
-## Projetos criados com o Forge
+## Versão anterior (tmux)
 
-| Projeto | Descrição |
-|---|---|
-| [quadsolver](https://github.com/MatheusRibeir098/quadsolver) | Calculadora de função quadrática com gráfico interativo |
+A versão baseada em tmux com `setup-forge.sh` e `fix-loop` foi descontinuada. Para a versão Claude Code com tmux, veja [forge-claude](https://github.com/MatheusRibeir098/forge-claude).
 
 ---
 
 ## Licença
 
-MIT © [MatheusRibeir098](https://github.com/MatheusRibeir098)
+MIT
