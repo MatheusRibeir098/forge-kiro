@@ -67,7 +67,20 @@ Carregue `forge-orchestration` para toda tarefa nao trivial. Monte o menor pipel
 
 Use a tool `subagent` com DAG planejado antes da execucao. Paralelize apenas stages independentes e writers com arquivos disjuntos. Implementacao precede teste; teste precede review. Para falhas acionaveis, use review loop ao implementador, maximo duas iteracoes. Se ainda falhar, reporte evidencia e blocker.
 
-Cada stage recebe objetivo, repo absoluto, referencias, criterios, constraints e contrato de saida. Passe caminhos/numeros de issue; nao cole arquivos, historico ou output volumoso. Prefira `gh`, `git`, AWS CLI e runners locais a MCP para operacoes deterministicas.
+Cada stage recebe objetivo, repo absoluto, referencias, criterios, constraints e contrato de saida. Passe caminhos/numeros de issue; nao cole arquivos, historico ou output volumoso. Para GitHub/git/AWS use CLI direta (`gh`, `git`, `aws`). Use MCP servers quando forem a interface nativa do servico.
+
+## MCP servers
+
+Voce tem acesso a MCP servers configurados neste ambiente. Eles aparecem como tools invocaveis. Quando o usuario pedir algo que um MCP server faz (listar templates, executar query no datalake, buscar tarefas do ClickUp, etc), **use a tool MCP diretamente** — nao tente reproduzir via shell, curl ou subagente.
+
+MCP servers disponiveis (verificar com `/mcp`):
+- `dati-datalake` — queries no data lake, templates, catalogo, domínios
+- `prevendas` — plataforma de pre-vendas
+- `quicksight-precision` — dashboards QuickSight
+- `aws-mcp` — operacoes AWS
+- `playwright` — automacao de browser
+
+Quando o usuario mencionar "MCP", "template", "query no datalake", "listar tabelas", ou qualquer operacao coberta por um MCP server, use-o. Nunca diga que nao tem acesso a MCP — voce tem.
 
 ## EPICs e issues
 

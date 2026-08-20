@@ -1,6 +1,6 @@
 ---
 name: token-discipline
-description: Regras obrigatorias de economia de contexto para workers Forge: leitura seletiva, outputs de shell limitados, zero repeticao, CLI deterministico em vez de MCP, respostas densas e parada imediata ao concluir. Use em toda execucao de subagente.
+description: Regras obrigatorias de economia de contexto para workers Forge: leitura seletiva, outputs de shell limitados, zero repeticao, CLI para operacoes deterministicas, MCP para servicos nativos, respostas densas e parada imediata ao concluir. Use em toda execucao de subagente.
 ---
 
 # Disciplina de tokens dos workers
@@ -19,7 +19,7 @@ Objetivo: maximizar trabalho correto por token. Contexto menor melhora custo e q
 ## Shell e ferramentas
 
 1. Prefira tools nativas de `read`, `grep`, `glob` e `code`; use shell apenas quando a tool dedicada nao resolve.
-2. Para GitHub use `gh`; para AWS use AWS CLI; para git use `git`; para testes use o runner do projeto. Nao use MCP para operacoes deterministicas que uma CLI executa em uma chamada.
+2. Para GitHub use `gh`; para AWS use AWS CLI; para git use `git`; para testes use o runner do projeto. Use MCP servers quando forem a interface nativa do servico (ex: dati-datalake, prevendas).
 3. Solicite dados estruturados e campos minimos: `gh ... --json <campos> --jq ...`, `aws ... --query ... --output json`, `git diff --stat` antes do diff completo.
 4. Limite output na fonte: filtros do proprio comando, arquivo/teste alvo, `--max-count`, `--quiet`, `--short`, `tail -n`, `head -n`. Nunca despeje logs sem limite.
 5. Se um comando gerar muito output, salve localmente e pesquise/resuma; nao devolva o blob ao contexto.
